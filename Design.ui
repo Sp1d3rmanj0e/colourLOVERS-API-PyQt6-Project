@@ -24,26 +24,26 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="tab_mainScreen">
        <attribute name="title">
         <string>Palette Finder</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QGridLayout" name="gridLayout_seedColorInfo">
           <item row="1" column="2">
-           <layout class="QVBoxLayout" name="verticalLayout_2">
+           <layout class="QVBoxLayout" name="verticalLayout_seedColorActions">
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="pushButton_randomColor">
               <property name="text">
                <string>Random Color</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="pushButton_chooseColor">
               <property name="text">
                <string>Choose Color</string>
               </property>
@@ -52,7 +52,7 @@
            </layout>
           </item>
           <item row="1" column="1">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="label_imageSeedColor">
             <property name="text">
              <string/>
             </property>
@@ -68,7 +68,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_3">
+           <widget class="QLabel" name="label_colorHex">
             <property name="text">
              <string>Color Hex</string>
             </property>
@@ -78,7 +78,7 @@
            </widget>
           </item>
           <item row="0" column="0" colspan="3">
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="label_paletteFinder">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -116,9 +116,9 @@
          </widget>
         </item>
         <item row="2" column="0">
-         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
+         <layout class="QVBoxLayout" name="verticalLayout_randomPaletteInfo" stretch="0,0">
           <item>
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="label_paletteName">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -140,7 +140,7 @@
            </widget>
           </item>
           <item>
-           <layout class="QGridLayout" name="gridLayout_2" rowminimumheight="0,0">
+           <layout class="QGridLayout" name="gridLayout_randomPalette" rowminimumheight="0,0">
             <property name="leftMargin">
              <number>200</number>
             </property>
@@ -148,7 +148,7 @@
              <number>200</number>
             </property>
             <item row="0" column="0" colspan="5">
-             <widget class="QLabel" name="label_5">
+             <widget class="QLabel" name="label_imageRandomPalette">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -173,7 +173,7 @@
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="label_10">
+             <widget class="QLabel" name="label_firstPaletteHex">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
@@ -195,7 +195,7 @@
              </widget>
             </item>
             <item row="1" column="3">
-             <widget class="QLabel" name="label_8">
+             <widget class="QLabel" name="label_fourthPaletteHex">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
@@ -217,7 +217,7 @@
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QLabel" name="label_6">
+             <widget class="QLabel" name="label_secondPaletteHex">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
@@ -239,7 +239,7 @@
              </widget>
             </item>
             <item row="1" column="4">
-             <widget class="QLabel" name="label_9">
+             <widget class="QLabel" name="label_fifthPaletteHex">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
@@ -261,7 +261,7 @@
              </widget>
             </item>
             <item row="1" column="2">
-             <widget class="QLabel" name="label_7">
+             <widget class="QLabel" name="label_thirdPaletteHex">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
@@ -287,7 +287,7 @@
          </layout>
         </item>
         <item row="3" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout_randomPaletteActions">
           <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
@@ -305,21 +305,21 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_4">
+           <widget class="QPushButton" name="pushButton_downloadRandomPalette">
             <property name="text">
              <string>Download</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="pushButton_nextPalette">
             <property name="text">
              <string>Next Palette</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_5">
+           <widget class="QPushButton" name="pushButton_favoriteRandomPalette">
             <property name="text">
              <string>Favorite</string>
             </property>
@@ -329,7 +329,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_3">
+      <widget class="QWidget" name="tab_favoritePalettes">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -356,7 +356,7 @@
          <number>6</number>
         </property>
         <item>
-         <widget class="QLabel" name="label_11">
+         <widget class="QLabel" name="label_favoritePalettesTitle">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -378,14 +378,14 @@
          </widget>
         </item>
         <item>
-         <layout class="QGridLayout" name="gridLayout_3">
+         <layout class="QGridLayout" name="gridLayout_favoritePaletteList">
           <item row="9" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <layout class="QHBoxLayout" name="horizontalLayout_favoritePaletteSlot5">
             <property name="rightMargin">
              <number>50</number>
             </property>
             <item>
-             <widget class="QLabel" name="label_12">
+             <widget class="QLabel" name="label_paletteNameSlot5">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -413,7 +413,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_17">
+             <widget class="QLabel" name="label_imagePaletteSlot5">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
@@ -428,12 +428,12 @@
            </layout>
           </item>
           <item row="5" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <layout class="QHBoxLayout" name="horizontalLayout_favoritePaletteSlot3">
             <property name="rightMargin">
              <number>50</number>
             </property>
             <item>
-             <widget class="QLabel" name="label_15">
+             <widget class="QLabel" name="label_paletteNameSlot3">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -461,7 +461,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_19">
+             <widget class="QLabel" name="label_imagePaletteSlot3">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
@@ -479,12 +479,12 @@
            </layout>
           </item>
           <item row="7" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <layout class="QHBoxLayout" name="horizontalLayout_favoritePaletteSlot4">
             <property name="rightMargin">
              <number>50</number>
             </property>
             <item>
-             <widget class="QLabel" name="label_16">
+             <widget class="QLabel" name="label_paletteNameSlot4">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -512,7 +512,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_18">
+             <widget class="QLabel" name="label_imagePaletteSlot4">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
@@ -527,12 +527,12 @@
            </layout>
           </item>
           <item row="1" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <layout class="QHBoxLayout" name="horizontalLayout_favoritePaletteSlot1">
             <property name="rightMargin">
              <number>50</number>
             </property>
             <item>
-             <widget class="QLabel" name="label_13">
+             <widget class="QLabel" name="label_paletteNameSlot1">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -560,7 +560,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_21">
+             <widget class="QLabel" name="label_imagePaletteSlot1">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
@@ -576,7 +576,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_8">
+             <widget class="QPushButton" name="pushButton_unfavoriteFavoritedPalette">
               <property name="maximumSize">
                <size>
                 <width>80</width>
@@ -589,7 +589,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_9">
+             <widget class="QPushButton" name="pushButton_downloadFavoritedPalette">
               <property name="maximumSize">
                <size>
                 <width>80</width>
@@ -604,12 +604,12 @@
            </layout>
           </item>
           <item row="3" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <layout class="QHBoxLayout" name="horizontalLayout_favoritePaletteSlot2">
             <property name="rightMargin">
              <number>50</number>
             </property>
             <item>
-             <widget class="QLabel" name="label_14">
+             <widget class="QLabel" name="label_paletteNameSlot2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -637,7 +637,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_20">
+             <widget class="QLabel" name="label_imagePaletteSlot2">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
@@ -655,35 +655,35 @@
            </layout>
           </item>
           <item row="4" column="0">
-           <widget class="Line" name="line_3">
+           <widget class="Line" name="line_divideSlot3">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="Line" name="line_2">
+           <widget class="Line" name="line_divideSlot2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item row="6" column="0">
-           <widget class="Line" name="line_4">
+           <widget class="Line" name="line_divideSlot4">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item row="8" column="0">
-           <widget class="Line" name="line_5">
+           <widget class="Line" name="line_divideSlot5">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="Line" name="line_6">
+           <widget class="Line" name="line_divideSlot1">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -692,7 +692,7 @@
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0">
+         <layout class="QHBoxLayout" name="horizontalLayout_pageControls" stretch="0,0,0">
           <property name="sizeConstraint">
            <enum>QLayout::SetNoConstraint</enum>
           </property>
@@ -703,14 +703,14 @@
            <number>50</number>
           </property>
           <item>
-           <widget class="QPushButton" name="pushButton_6">
+           <widget class="QPushButton" name="pushButton_previousPage">
             <property name="text">
              <string>Previous Page</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_22">
+           <widget class="QLabel" name="label_currentPage">
             <property name="maximumSize">
              <size>
               <width>140</width>
@@ -726,7 +726,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_7">
+           <widget class="QPushButton" name="pushButton_nextPage">
             <property name="text">
              <string>Next Page</string>
             </property>
