@@ -1,8 +1,8 @@
-# from colourlovers.clapi import ColourLovers
-# cl = ColourLovers()
-# print(cl.search_colors(True, request='random', format = 'json'))
+from colourlovers.clapi import ColourLovers
 
 import random
+
+import json
 
 from design import Ui_MainWindow
 from PyQt6.QtWidgets import QApplication, QMainWindow, QColorDialog
@@ -50,6 +50,52 @@ class Window(QMainWindow, Ui_MainWindow):
     # Changes the palette collection
     def setNewColor(self, hex):
         self.label_colorHex.setText(hex)
+        self.updateSeedColorSprite(hex)
+
+    def updateSeedColorSprite(self, hex):
+        
+        print(hex)
+
+        # Retrieve color data from the color
+        colorData = self.getColorData(hex)
+
+        # Get the image link from the color data
+        imageLink = colorData["imageUrl"]
+
+        print(imageLink)
+
+        #print(imageLink)
+
+    def trimHex(self, hex):
+        # Remove the # from the hex code
+        trimmedHex = hex[1:]
+        return trimmedHex
+
+    # Hex can have or not have #
+    # Will return false if API failed
+    def getColorData(self, hex):
+        
+        # Remove # If needed
+        if (len(hex) == 7):
+            hex = self.trimHex(hex)
+
+        # Call API to get color data
+        cl = ColourLovers()
+        newColor = cl.search_color(True, hexvalue = hex, format = 'json')
+        del cl
+
+        # Parse the json data
+        parsedData = json.loads(newColor)
+
+        # Confirm not an empty array
+        if (len(parsedData) == 0):
+            return False
+
+        # Return data
+        return parsedData[0]
+
+    def confirmColorExists(self, hex):
+        pass
 
     
 
