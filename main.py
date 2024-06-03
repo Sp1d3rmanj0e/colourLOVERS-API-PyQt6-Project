@@ -4,6 +4,8 @@ import random
 
 import json
 
+import math
+
 import sys
 import os
 import shutil
@@ -25,9 +27,16 @@ class Window(QMainWindow, Ui_MainWindow):
     currentPaletteName = ""
     currentPaletteImgUrl = ""
 
+    palettesPerPage = 5
+    numFavoritePalettes = 0
+    numFavoritePalettePages = 1
+    currentFavoritePalettePage = 1
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+
+        # Update variables
 
         # Check if choose color button pressed
         self.pushButton_chooseColor.clicked.connect(self.chooseColor)
@@ -43,7 +52,13 @@ class Window(QMainWindow, Ui_MainWindow):
 
         # Check if favorite/unfavorite button is pressed
         self.pushButton_favoriteRandomPalette.clicked.connect(self.favoriteRandomPalette)
-    
+
+        # Check if next page for favorite palettes is pressed
+        self.pushButton_nextPage.clicked.connect(self.favoritePalettesNextPage)
+
+        # Check if previous page for favorite palettes is pressed
+        self.pushButton_previousPage.clicked.connect(self.favoritePalettesPrevPage)
+
     # Opens color picker terminal
     def chooseColor(self):
         dialog = QColorDialog()
@@ -307,6 +322,12 @@ class Window(QMainWindow, Ui_MainWindow):
 
         #print(response)
 
+    
+    def updateFavoritePalettePageVars(self):
+        self.numFavoritePalettes = PO.getNumFavoritedPalettes(self)
+        print("Current number of favorited palettes", self.numFavoritePalettes)
+        self.numFavoritePalettePages = max(math.ceil(self.numFavoritePalettes/self.palettesPerPage), 1)
+
     def favoriteRandomPalette(self):
 
         paletteExists = PO.getIfPaletteIdExists(self, self.currentPaletteId)
@@ -321,8 +342,135 @@ class Window(QMainWindow, Ui_MainWindow):
             PO.removePalette(self, self.currentPaletteId)
             print("Unfavorited palette!")
 
+        # Update page variables
+        self.updateFavoritePalettePageVars()
 
-        
+    def showFavoritedPalettes(self, page = 0):
+
+        # Get access to all palettes
+
+        # Get a section of 5 palettes (based on page)
+
+        # If the number of palettes on the page is less than 5, stop at the correct number
+
+        # Draw all favorited palettes on this page
+
+            # Add name
+
+            # Add Image
+
+        # Calculate which group of 5 palettes to get
+        paletteGroupMin = self.palettesPerPage * page                # Ex. Page = 0; 5 * 0 = 0
+        paletteGroupMax = paletteGroupMin + self.palettesPerPage - 1 # Ex. Page = 2; (5*2 = 10) - 1 = 9
+
+        # Get that palette section
+        paletteSelectionArr = PO.getPaletteSection(self, paletteGroupMin, paletteGroupMax)
+
+        print(paletteSelectionArr)
+
+        self.clearFavoritePaletteSlots()
+
+        # Draw as many palettes as there are available on this page
+        for i in range(len(paletteSelectionArr)):
+
+            palette = paletteSelectionArr[i]
+
+            p_name = palette[1]
+            p_imgUrl = palette[2]
+
+            self.drawFavoritePaletteSlot(p_name, p_imgUrl, i)
+
+    def clearFavoritePaletteSlots(self):
+
+        # Reset image
+        self.label_imagePaletteSlot1.setPixmap(QtGui.QPixmap("emptyPalette.png"))
+            
+        # Reset name
+        self.label_paletteNameSlot1.setText("\"\"")
+
+        # Reset image
+        self.label_imagePaletteSlot2.setPixmap(QtGui.QPixmap("emptyPalette.png"))
+            
+        # Reset name
+        self.label_paletteNameSlot2.setText("\"\"")
+
+        # Reset image
+        self.label_imagePaletteSlot3.setPixmap(QtGui.QPixmap("emptyPalette.png"))
+            
+        # Reset name
+        self.label_paletteNameSlot3.setText("\"\"")
+
+        # Reset image
+        self.label_imagePaletteSlot4.setPixmap(QtGui.QPixmap("emptyPalette.png"))
+            
+        # Reset name
+        self.label_paletteNameSlot4.setText("\"\"")
+
+        # Reset image
+        self.label_imagePaletteSlot5.setPixmap(QtGui.QPixmap("emptyPalette.png"))
+            
+        # Reset name
+        self.label_paletteNameSlot5.setText("\"\"")
+
+    def drawFavoritePaletteSlot(self, name, imgUrl, spot):
+
+        if spot == 0:
+            
+            # Set image
+            imageDownloader.downloadImageUrl('favoritePaletteSlot1.png', imgUrl)
+            self.label_imagePaletteSlot1.setPixmap(QtGui.QPixmap("favoritePaletteSlot1.png"))
+            
+            # Set name
+            self.label_paletteNameSlot1.setText(name)
+
+        elif spot == 1:
+
+            # Set image
+            imageDownloader.downloadImageUrl('favoritePaletteSlot2.png', imgUrl)
+            self.label_imagePaletteSlot2.setPixmap(QtGui.QPixmap("favoritePaletteSlot2.png"))
+            
+            # Set name
+            self.label_paletteNameSlot2.setText(name)
+
+        elif spot == 2:
+
+            # Set image
+            imageDownloader.downloadImageUrl('favoritePaletteSlot3.png', imgUrl)
+            self.label_imagePaletteSlot3.setPixmap(QtGui.QPixmap("favoritePaletteSlot3.png"))
+            
+            # Set name
+            self.label_paletteNameSlot3.setText(name)
+
+        elif spot == 3:
+
+            # Set image
+            imageDownloader.downloadImageUrl('favoritePaletteSlot4.png', imgUrl)
+            self.label_imagePaletteSlot4.setPixmap(QtGui.QPixmap("favoritePaletteSlot4.png"))
+            
+            # Set name
+            self.label_paletteNameSlot4.setText(name)
+
+        elif spot == 4:
+
+            # Set image
+            imageDownloader.downloadImageUrl('favoritePaletteSlot5.png', imgUrl)
+            self.label_imagePaletteSlot5.setPixmap(QtGui.QPixmap("favoritePaletteSlot5.png"))
+            
+            # Set name
+            self.label_paletteNameSlot5.setText(name)
+
+        else:
+            print("Error, spot not found")
+
+    def favoritePalettesNextPage(self):
+        if self.currentFavoritePalettePage < self.numFavoritePalettePages:
+            self.currentFavoritePalettePage += 1
+            self.showFavoritedPalettes(self, self.currentFavoritePalettePage)
+
+    def favoritePalettesPrevPage(self):
+        if self.currentFavoritePalettePage > 1:
+            self.currentFavoritePalettePage -= 1
+            self.showFavoritedPalettes(self, self.currentFavoritePalettePage)
 
 def main():
 

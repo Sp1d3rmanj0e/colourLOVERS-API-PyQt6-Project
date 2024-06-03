@@ -32,6 +32,10 @@ class paletteOpener():
 
             rows = list(csv_reader)
 
+            # Cap the maximum palette count to the max size of the list
+            # Ex. If there's only 3 items, but you requested 5, it will only grab 3 items, not 5
+            paletteEnd = min(paletteEnd, len(rows))
+
             paletteData = rows[paletteStart:paletteEnd+1]
 
             # Close the file
@@ -82,6 +86,18 @@ class paletteOpener():
                 
             # No matches found, returning False
             return False
+    
+    # CREDIT TO: https://www.tutorialspoint.com/how-to-count-the-number-of-lines-in-a-csv-file-in-python#:~:text=Using%20the%20len()%20Function,lines%20in%20the%20CSV%20file.
+    def getNumFavoritedPalettes(self):
+
+        # Read the CSV file into a pandas DataFrame object
+        df = pd.read_csv('favoritePalettes.csv')
+
+        # Count the number of rows in the DataFrame object using the built-in len() function
+        num_lines = len(df)
+
+        return num_lines
+
 
 '''PO = paletteOpener()
 PO.addPalette(8, "hsssi", "sssslink here")
