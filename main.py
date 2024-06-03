@@ -10,6 +10,7 @@ import shutil
 from pathlib import Path
 
 from imageGrabber import imageDownloader
+from paletteLoader import paletteOpener as PO
 
 from design import Ui_MainWindow
 from PyQt6.QtWidgets import QApplication, QMainWindow, QColorDialog, QFileDialog
@@ -20,6 +21,9 @@ class Window(QMainWindow, Ui_MainWindow):
 
     paletteDataArr = []
     paletteNum = 0
+    currentPaletteId = -1
+    currentPaletteName = ""
+    currentPaletteImgUrl = ""
 
     def __init__(self):
         super().__init__()
@@ -36,6 +40,9 @@ class Window(QMainWindow, Ui_MainWindow):
 
         # Check if download button is pressed
         self.pushButton_downloadRandomPalette.clicked.connect(self.downloadFile)
+
+        # Check if favorite/unfavorite button is pressed
+        self.pushButton_favoriteRandomPalette.clicked.connect(self.favoriteRandomPalette)
     
     # Opens color picker terminal
     def chooseColor(self):
@@ -183,6 +190,12 @@ class Window(QMainWindow, Ui_MainWindow):
         print("url", paletteImgUrl)
         print("colors", paletteColors)
         print("name", paletteName)
+        
+        # Store these variables now so we don't have to
+        # Call the API again to get the infomation
+        self.currentPaletteId = paletteId
+        self.currentPaletteName = paletteName
+        self.currentPaletteImgUrl = paletteImgUrl
 
         self.updatePaletteHexLabels(paletteColors)
         self.updatePaletteName(paletteName)
@@ -259,16 +272,16 @@ class Window(QMainWindow, Ui_MainWindow):
     # FOR HELP
     def downloadFile(self):
         
+        # Get the name of the palette
+        paletteName = self.label_paletteName.text()
+
         file_dialog = QFileDialog()
 
         # Designate viable files to select
-        file_filter = "Data file (*.png *.txt)"
+        file_filter = "Image file (*.png)"
 
         # Generate a random file name for the file
-        file_name = "RandomPalette" + str(random.randrange(0, 9999999999, 1)) + ".png"
-
-        # Get the default location to download
-        #default_file_path = Path.home() / "Pictures"
+        file_name = paletteName + " " + str(random.randrange(0, 9999999999, 1)) + ".png"
 
         # Get open file name
         response = file_dialog.getSaveFileName(
@@ -278,20 +291,35 @@ class Window(QMainWindow, Ui_MainWindow):
             filter=file_filter
         )
 
+        # If nothing is returned, cancel extraction
         if (response[0] == ''):
             print("Download cancelled")
             return
 
+        # Get the original image
         source_file = open('generedPaletteDemoImage.png', 'rb')
 
+        # Get the target file location
         save_path = open(response[0], 'wb')
 
+        # Copy the original file to the new location
         shutil.copyfileobj(source_file, save_path)
 
-        print(response)
+        #print(response)
 
+    def favoriteRandomPalette(self):
 
+        paletteExists = PO.getIfPaletteIdExists(self, self.currentPaletteId)
 
+        # If not previously favorited, favorite it now
+        if (not(paletteExists)):
+            PO.addPalette(self, self.currentPaletteId, self.currentPaletteName, self.currentPaletteImgUrl)
+            print("Favorited palette!")
+        
+        # Otherwise, unfavorite it instead
+        else:
+            PO.removePalette(self, self.currentPaletteId)
+            print("Unfavorited palette!")
 
 
         

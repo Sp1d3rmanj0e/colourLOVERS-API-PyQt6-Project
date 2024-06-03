@@ -1,5 +1,4 @@
 import requests 
-from PIL import Image 
 
 # CREDIT TO https://www.geeksforgeeks.org/how-to-download-an-image-from-a-url-in-python/
 
