@@ -4,13 +4,23 @@ import random
 
 import json
 
+import sys
+import os
+import shutil
+from pathlib import Path
+
 from imageGrabber import imageDownloader
 
 from design import Ui_MainWindow
-from PyQt6.QtWidgets import QApplication, QMainWindow, QColorDialog
-from PyQt6 import QtCore, QtGui
+from PyQt6.QtWidgets import QApplication, QMainWindow, QColorDialog, QFileDialog
+from PyQt6 import QtCore, QtGui 
+from PyQt6.QtCore import QStandardPaths
 
 class Window(QMainWindow, Ui_MainWindow):
+
+    paletteDataArr = []
+    paletteNum = 0
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -20,6 +30,12 @@ class Window(QMainWindow, Ui_MainWindow):
 
         # Check if random color button pressed
         self.pushButton_randomColor.clicked.connect(self.randomColor)
+
+        # Check if next palette button is pressed
+        self.pushButton_nextPalette.clicked.connect(self.switchNextPalette)
+
+        # Check if download button is pressed
+        self.pushButton_downloadRandomPalette.clicked.connect(self.downloadFile)
     
     # Opens color picker terminal
     def chooseColor(self):
@@ -146,16 +162,17 @@ class Window(QMainWindow, Ui_MainWindow):
     # Returns the compiled array
     def updatePaletteCollection(self, hex):
         
-        paletteData = self.getPaletteData(hex)
+        self.paletteDataArr = self.getPaletteData(hex)
+        self.paletteNum = 0
 
-        print(paletteData)
-        print(">>>>")
-        self.openPalette(paletteData, 0)
+        self.openPalette(self.paletteNum)
 
-    def openPalette(self, paletteData, paletteNum = 0):
+    def openPalette(self, paletteNum = 0):
         
         # Get the palette object to extract
-        paletteObj = paletteData[paletteNum]
+        paletteObj = self.paletteDataArr[paletteNum]
+
+        print("Palette object", paletteObj)
 
         paletteId = paletteObj.id
         paletteImgUrl = paletteObj.image_url
@@ -172,21 +189,112 @@ class Window(QMainWindow, Ui_MainWindow):
         self.updatePaletteImage(paletteImgUrl)
 
     def updatePaletteHexLabels(self, paletteColors):
-        self.label_firstPaletteHex.setText(paletteColors[0])
-        self.label_secondPaletteHex.setText(paletteColors[1])
-        self.label_thirdPaletteHex.setText(paletteColors[2])
-        self.label_fourthPaletteHex.setText(paletteColors[3])
-        self.label_fifthPaletteHex.setText(paletteColors[4])
+
+        paletteLen = len(paletteColors)
+        
+        # Show labels as necessary
+        # (Some palettes have less than 5 colors)
+        if (paletteLen == 5):
+            self.label_firstPaletteHex.setText(paletteColors[0])
+            self.label_secondPaletteHex.setText(paletteColors[1])
+            self.label_thirdPaletteHex.setText(paletteColors[2])
+            self.label_fourthPaletteHex.setText(paletteColors[3])
+            self.label_fifthPaletteHex.setText(paletteColors[4])
+        elif (paletteLen == 4):
+            self.label_firstPaletteHex.setText(paletteColors[0])
+            self.label_secondPaletteHex.setText(paletteColors[1])
+            self.label_thirdPaletteHex.setText("")
+            self.label_fourthPaletteHex.setText(paletteColors[2])
+            self.label_fifthPaletteHex.setText(paletteColors[3])
+        elif (paletteLen == 3):
+            self.label_firstPaletteHex.setText(paletteColors[0])
+            self.label_secondPaletteHex.setText("")
+            self.label_thirdPaletteHex.setText(paletteColors[1])
+            self.label_fourthPaletteHex.setText("")
+            self.label_fifthPaletteHex.setText(paletteColors[2])
+        elif (paletteLen == 2):
+            self.label_firstPaletteHex.setText("")
+            self.label_secondPaletteHex.setText(paletteColors[0])
+            self.label_thirdPaletteHex.setText("")
+            self.label_fourthPaletteHex.setText(paletteColors[1])
+            self.label_fifthPaletteHex.setText("")
+        elif (paletteLen == 1):
+            self.label_firstPaletteHex.setText("")
+            self.label_secondPaletteHex.setText("")
+            self.label_thirdPaletteHex.setText(paletteColors[0])
+            self.label_fourthPaletteHex.setText("")
+            self.label_fifthPaletteHex.setText("")
+        else:
+            self.label_firstPaletteHex.setText("Error")
+            self.label_secondPaletteHex.setText("Palette")
+            self.label_thirdPaletteHex.setText("Not")
+            self.label_fourthPaletteHex.setText("Found")
+            self.label_fifthPaletteHex.setText("Error")
 
     def updatePaletteName(self, paletteName):
         self.label_paletteName.setText(paletteName)
 
     def updatePaletteImage(self, imgUrl):
 
-        #imageDownloader.downloadImageUrl('generedPaletteDemoImage.png', imgUrl)
+        imageDownloader.downloadImageUrl('generedPaletteDemoImage.png', imgUrl)
+        self.label_imageRandomPalette.setPixmap(QtGui.QPixmap("generedPaletteDemoImage.png"))
 
-        #self.label_imageSeedColor.setPixmap(QtGui.QPixmap("generedPaletteDemoImage.png"))
-        pass
+    def switchNextPalette(self):
+
+        # Get the length of the palette arr
+        paletteLength = len(self.paletteDataArr)
+
+        print("Palette length", paletteLength)
+
+        # Increment the palette number by 1 or loop back to 0 if reached the max
+        self.paletteNum = (self.paletteNum+1) % paletteLength
+
+        print("Palette num", self.paletteNum)
+
+        self.openPalette(self.paletteNum)
+
+    # THANKS TO https://www.freecodecamp.org/news/python-copy-file-copying-files-to-another-directory/#:~:text=To%20copy%20the%20contents%20of%20a%20file%20object%20to%20another,and%20a%20destination%20file%20object.
+    # THANKS TO https://stackoverflow.com/questions/8024248/telling-python-to-save-a-txt-file-to-a-certain-directory-on-windows-and-mac
+    # THANKS TO https://www.youtube.com/watch?v=XgK8ZRvcE5E
+    # FOR HELP
+    def downloadFile(self):
+        
+        file_dialog = QFileDialog()
+
+        # Designate viable files to select
+        file_filter = "Data file (*.png *.txt)"
+
+        # Generate a random file name for the file
+        file_name = "RandomPalette" + str(random.randrange(0, 9999999999, 1)) + ".png"
+
+        # Get the default location to download
+        #default_file_path = Path.home() / "Pictures"
+
+        # Get open file name
+        response = file_dialog.getSaveFileName(
+            parent=self,
+            caption='Select a folder',
+            directory=file_name,
+            filter=file_filter
+        )
+
+        if (response[0] == ''):
+            print("Download cancelled")
+            return
+
+        source_file = open('generedPaletteDemoImage.png', 'rb')
+
+        save_path = open(response[0], 'wb')
+
+        shutil.copyfileobj(source_file, save_path)
+
+        print(response)
+
+
+
+
+
+        
 
 def main():
 
