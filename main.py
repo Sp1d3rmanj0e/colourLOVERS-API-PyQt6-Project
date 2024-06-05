@@ -53,6 +53,9 @@ class Window(QMainWindow, Ui_MainWindow):
         # Check if favorite/unfavorite button is pressed
         self.pushButton_favoriteRandomPalette.clicked.connect(self.favoriteRandomPalette)
 
+        # Check if tab changed to favorite palettes
+        self.tabWidget.tabBarClicked.connect(self.updateTab)
+
         # Check if next page for favorite palettes is pressed
         self.pushButton_nextPage.clicked.connect(self.favoritePalettesNextPage)
 
@@ -61,6 +64,11 @@ class Window(QMainWindow, Ui_MainWindow):
 
     # Opens color picker terminal
     def chooseColor(self):
+        ''' 
+        Opens a color dialog that allows the player to pick a color of their choice 
+        Then calls setNewColor to call all corresponding functions
+        '''
+
         dialog = QColorDialog()
 
         clickedOk = dialog.exec()
@@ -75,7 +83,14 @@ class Window(QMainWindow, Ui_MainWindow):
             print("Dialog cancelled")
 
     # Generates and returns a random hex color (String)
-    def getRandomHexColor(self):
+    def getRandomHexColor(self) -> str:
+        ''' 
+        Generates a random hex color 
+
+        Returns:
+            String: A 6 digit hex code with a '#' appended at the start
+
+        '''
         red   = random.randint(0, 255)
         green = random.randint(0, 255)
         blue  = random.randint(0, 255)
@@ -84,21 +99,40 @@ class Window(QMainWindow, Ui_MainWindow):
 
     # Generates and updates the current color image and text
     def randomColor(self):
+        '''
+        Generates a random color and activates the
+        setNewColor() function to activate all following functions
+        '''
         hex = self.getRandomHexColor()
         self.setNewColor(hex)
 
     # Changes the seed color title (done)
     # Changes the seed color image (done)
     # Changes the palette collection (not done)
-    def setNewColor(self, hex):
+    def setNewColor(self, hex : str):
+        '''
+        Changes title, image, and palette collection corresponding
+        With the current hex color
+
+        Args:
+            hex (string): The hex code of the new color
+        '''
         self.label_colorHex.setText(hex)
         #self.updateSeedColorSprite(hex)
         self.updatePaletteCollection(hex)
 
     # Given a hex code, retrieve the sprite version of that hex
     # And change the image displayed on the PyQt6 Window
-    def updateSeedColorSprite(self, hex):
-        
+    def updateSeedColorSprite(self, hex : str):
+        '''
+        Given a hex, call the colourLOVERS api to get and download
+        the color image.  It then sets that image to the seedColor 
+        image label
+
+        Args:
+            hex (String): The color to get an image of
+        '''
+
         print(hex)
 
         # Retrieve color data from the color
@@ -124,8 +158,16 @@ class Window(QMainWindow, Ui_MainWindow):
             return False
 
     # Remove the # from the hex code if needed
-    def trimHex(self, hex):
+    def trimHex(self, hex : str) -> str:
+        '''
+        Removes the '#' from a hex String if it needs one
 
+        Args:
+            hex (String): The string hex (Only works if 7 chars long)
+
+        Returns:
+            String: The 6 digit hex (w/o the '#')
+        '''
         if (len(hex) == 7):
             trimmedHex = hex[1:]
 
@@ -133,8 +175,21 @@ class Window(QMainWindow, Ui_MainWindow):
 
     # Hex can have or not have #
     # Will return false if API failed
-    def getColorData(self, hex):
-        
+    def getColorData(self, hex : str): # TODO - when able to, add "-> dict:" (needs confirmation of data type)
+        '''
+        Get the API color data from a given hex.
+        This color data includes:
+            id
+            imageUrl
+            and others
+
+        Args:
+            hex (String): A hex code to get the color data from
+
+        Returns:
+            dict (see api for all values): Contains data about the 
+                                           given color
+        '''
         # Remove # If needed
         hex = self.trimHex(hex)
 
@@ -145,8 +200,20 @@ class Window(QMainWindow, Ui_MainWindow):
 
         return self.parseData(newColor)[0]
 
-    def getPaletteData(self, searchHex):
+    def getPaletteData(self, searchHex : str): # TODO: Find return data type
+        '''
+        Gets an array containing several palettes with a set seed color
 
+        Args:
+            searchHex (String): The seed color that the palette must contain
+
+        Returns:
+            array[object]: Contains several palette objects with variables like:
+                           id
+                           image_url
+                           colors
+                           title
+        '''
         # Remove # If needed
         searchHex = self.trimHex(searchHex)
 
@@ -161,7 +228,16 @@ class Window(QMainWindow, Ui_MainWindow):
     # Parses json data
     # Returns parsed data if all went well
     # Returns false if data does not exist or was empty
-    def parseData(self, data):
+    def parseData(self, data : json): # TODO: Find return data type
+        '''
+        Given data, load the json data
+
+        Args:
+            data (Json): The json-encoded data
+
+        Returns:
+            loaded Json: The json-deencoded data
+        '''
         # Parse the json data
         parsedData = json.loads(data)
 
@@ -182,15 +258,30 @@ class Window(QMainWindow, Ui_MainWindow):
     # .colors      - an array containing all 5 hex colors for the palette
     # .title       - the name of the palette
     # Returns the compiled array
-    def updatePaletteCollection(self, hex):
+    def updatePaletteCollection(self, hex : str):
+        '''
+        Given a hex, generate a new palette collection and
+        Update the current randomized palette
+
+        Args:
+            hex (String): The seed hex to generate the palettes from
+        '''
         
         self.paletteDataArr = self.getPaletteData(hex)
         self.paletteNum = 0
 
         self.openPalette(self.paletteNum)
 
-    def openPalette(self, paletteNum = 0):
-        
+    def openPalette(self, paletteNum : int = 0):
+        '''
+        Extracts data from a palette object and modified QT objects
+        To reflect the palette data
+        This includes the palette image and respective hex colors
+
+        Args:
+            paletteNum (int): Which palette obj in the paletteArr to use
+        '''
+
         # Get the palette object to extract
         paletteObj = self.paletteDataArr[paletteNum]
 
@@ -216,8 +307,16 @@ class Window(QMainWindow, Ui_MainWindow):
         self.updatePaletteName(paletteName)
         self.updatePaletteImage(paletteImgUrl)
 
-    def updatePaletteHexLabels(self, paletteColors):
+    def updatePaletteHexLabels(self, paletteColors): # TODO: find data type for string arrays
+        '''
+        Updates the 5 labels in the bottom of the main QT winow
+        To display the current palette's hex colors
 
+        Args:
+            paletteColors (0 < array[Strings] <= 5): An array containing 
+                                                     hexcolors of the current
+                                                     palette
+        '''
         paletteLen = len(paletteColors)
         
         # Show labels as necessary
@@ -259,16 +358,33 @@ class Window(QMainWindow, Ui_MainWindow):
             self.label_fourthPaletteHex.setText("Found")
             self.label_fifthPaletteHex.setText("Error")
 
-    def updatePaletteName(self, paletteName):
+    def updatePaletteName(self, paletteName : str):
+        '''
+        Updates the palette name given a palette name
+
+        Args:
+            paletteName (String): The name of the current palette
+        '''
         self.label_paletteName.setText(paletteName)
 
-    def updatePaletteImage(self, imgUrl):
+    def updatePaletteImage(self, imgUrl : str):
+        '''
+        Downloads and updates the palette image given an image url
+
+        Args:
+            imgUrl (String): The url of the image to download and show
+        '''
 
         imageDownloader.downloadImageUrl('generedPaletteDemoImage.png', imgUrl)
         self.label_imageRandomPalette.setPixmap(QtGui.QPixmap("generedPaletteDemoImage.png"))
 
     def switchNextPalette(self):
-
+        '''
+        Switches to the next generated palette
+        If reached the last page, loop back to the start
+        Then open the palette on that page 
+        '''
+        
         # Get the length of the palette arr
         paletteLength = len(self.paletteDataArr)
 
@@ -286,7 +402,10 @@ class Window(QMainWindow, Ui_MainWindow):
     # THANKS TO https://www.youtube.com/watch?v=XgK8ZRvcE5E
     # FOR HELP
     def downloadFile(self):
-        
+        '''
+        Downloads the current randomized palette using QFileDialog
+        to determine a spot to place the file
+        '''
         # Get the name of the palette
         paletteName = self.label_paletteName.text()
 
@@ -324,12 +443,18 @@ class Window(QMainWindow, Ui_MainWindow):
 
     
     def updateFavoritePalettePageVars(self):
+        '''
+        Calculates the new number of pages to store favorite palettes
+        '''
         self.numFavoritePalettes = PO.getNumFavoritedPalettes(self)
         print("Current number of favorited palettes", self.numFavoritePalettes)
         self.numFavoritePalettePages = max(math.ceil(self.numFavoritePalettes/self.palettesPerPage), 1)
 
     def favoriteRandomPalette(self):
-
+        '''
+        Favorites the current randomized palette
+        And adds it to a csv file for later retrieval
+        '''
         paletteExists = PO.getIfPaletteIdExists(self, self.currentPaletteId)
 
         # If not previously favorited, favorite it now
@@ -345,19 +470,20 @@ class Window(QMainWindow, Ui_MainWindow):
         # Update page variables
         self.updateFavoritePalettePageVars()
 
-    def showFavoritedPalettes(self, page = 0):
+    def showFavoritedPalettes(self, page : int = 1):
+        '''
+        Updates the 5 image labels and 5 name labels of favorite palettes
+        Within the favorite palettes view
 
-        # Get access to all palettes
+        The palettes shown is determined by the favorite palette page
 
-        # Get a section of 5 palettes (based on page)
+        Args:
+            page (int): The favorite palette page to show
+                        NOTE: [page 1] represents [page 0]!
+        '''
 
-        # If the number of palettes on the page is less than 5, stop at the correct number
-
-        # Draw all favorited palettes on this page
-
-            # Add name
-
-            # Add Image
+        # Make page base 0, not base 1
+        page-=1
 
         # Calculate which group of 5 palettes to get
         paletteGroupMin = self.palettesPerPage * page                # Ex. Page = 0; 5 * 0 = 0
@@ -381,7 +507,9 @@ class Window(QMainWindow, Ui_MainWindow):
             self.drawFavoritePaletteSlot(p_name, p_imgUrl, i)
 
     def clearFavoritePaletteSlots(self):
-
+        '''
+        Clears all the palettes in the favorite palette page slots
+        '''
         # Reset image
         self.label_imagePaletteSlot1.setPixmap(QtGui.QPixmap("emptyPalette.png"))
             
@@ -412,8 +540,15 @@ class Window(QMainWindow, Ui_MainWindow):
         # Reset name
         self.label_paletteNameSlot5.setText("\"\"")
 
-    def drawFavoritePaletteSlot(self, name, imgUrl, spot):
+    def drawFavoritePaletteSlot(self, name : str, imgUrl : str, spot : int):
+        '''
+        Fills a favorite palette slot with an image and name
 
+        Args:
+            name (String): The name of the palette
+            imgUrl (String): A link to the palette image
+            spot (0 <= int < 5): The spot to put the palette info
+        '''
         if spot == 0:
             
             # Set image
@@ -463,14 +598,31 @@ class Window(QMainWindow, Ui_MainWindow):
             print("Error, spot not found")
 
     def favoritePalettesNextPage(self):
+        '''
+        Turns the page to the right by one to show other palettes
+        Will not move past the last page
+        '''
         if self.currentFavoritePalettePage < self.numFavoritePalettePages:
             self.currentFavoritePalettePage += 1
-            self.showFavoritedPalettes(self, self.currentFavoritePalettePage)
+            self.showFavoritedPalettes(self.currentFavoritePalettePage)
 
     def favoritePalettesPrevPage(self):
+        '''
+        Turns the page to the left by one to show previous palette pages
+        Will not move behind the first page
+        '''
         if self.currentFavoritePalettePage > 1:
             self.currentFavoritePalettePage -= 1
-            self.showFavoritedPalettes(self, self.currentFavoritePalettePage)
+            self.showFavoritedPalettes(self.currentFavoritePalettePage)
+
+    def updateTab(self):
+
+        # Tab 0 = Favorite palettes view
+        # Tab 1 = Main view
+        curTab = self.tabWidget.currentIndex()
+
+        if curTab == 0:
+            self.showFavoritedPalettes(self.currentFavoritePalettePage)
 
 def main():
 
